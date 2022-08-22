@@ -3,7 +3,9 @@ import scipy as sp
 import scipy.ndimage
 
 from skimage.util import view_as_blocks
-
+import imageio  # debug
+ref = imageio.imread("example_target.png") / 255
+obs = imageio.imread("example_target_degraded.png") / 255
 
 def downsample_block(a, σ=None):
     if σ is not None and σ > 0:
@@ -25,6 +27,7 @@ def pcr_one_scale(obs, ref, thr=None):
     obs_block = view_as_blocks(obs, (2, 2)).reshape(Y, X, 4)
     obs_med = np.median(obs_block, axis=-1)
     obs_difftomed = obs_block - obs_med[:, :, None]
+    obs_strongest = np.argmax(np.abs(obs_difftomed), axis=-1)
     mesh = np.meshgrid(range(obs_strongest.shape[0]), range(obs_strongest.shape[1]))
     obs_strongest = np.argmax(np.abs(obs_difftomed), axis=-1)
     obs_contrast = obs_difftomed[mesh[0], mesh[1], obs_strongest]
@@ -40,3 +43,29 @@ def pcr_one_scale(obs, ref, thr=None):
     pcr = 1 / (3 * n_comparisons) * np.sum(correlation * pass_threshold)
     return pcr
 
+def compute_pcr(obs, ref, σ=None, thr=None):
+    assert obs.shape == ref.shape
+    pcrs = []
+    while min(*obs.shape) >= 2:
+        pcr = pcr_one_scale(obs, ref, thr)
+        pcrs.append(pcr)
+        obs = downsample_block(obs, σ)
+        ref = downsample_block(ref, σ)
+    return pcrs
+
+
+if False and __name__ == "__main__":
+    import argparse
+    from sys import argv
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("obs", type=str)
+    parser.add_argument("ref", type=str)
+    parser.add_argument("-s", "--sigma", type=float, default=None)
+    parser.add_argument("-t", "--threshold", type=float, default=None)
+    args = parser.parse_args(argv[1:])
+    obs = imageio.imread(args.obs) / 255
+    ref = imageio.imread(args.ref) / 255
+    pcrs = compute_pcr(obs, ref, σ=args.σ, thr=args.thr)
+    for pcr in pcrs:
+        print(pcr)
