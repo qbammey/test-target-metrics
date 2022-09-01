@@ -12,7 +12,7 @@ def generate_fractal_pattern(Δ, p0=.5, init_yinyang=True, rng=None, return_all_
     signs = [signs_init]
     for scale, 𝛿 in enumerate(Δ):
         if scale == 0 and init_yinyang:
-            increment = np.array((-.5, .5, .5, -.5))[:, None, None] * signs[-1][None]
+            increment = np.array((-.5, .5, -.5, .5))[:, None, None] * signs[-1][None]
             if rng.random() < .5:
                 increment *= -1
         else:
@@ -65,7 +65,6 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--initial-average", type=float, default=.5)
     args = parser.parse_args(argv[1:])
     init_yinyang = args.first_tile == 'yinyang'
-    init_yinyang = True
     if args.type == "constant":
         pattern, all_patterns, _ = generate_constant_contrast_target(args.n_scales, args.contrast_init,
                                                                      args.contrast_increment, p0=args.initial_average,
