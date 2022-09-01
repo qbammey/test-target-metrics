@@ -79,5 +79,5 @@ if __name__ == "__main__":
     for i, p in enumerate(all_patterns):
         Y, X = p.shape
         rY, rX = Ye//Y, Xe//X
-        p = p.repeat(rY, axis=0).repeat(rX, axis=1)
+        p = p.repeat(rY, axis=0).repeat(rX, axis=1).clip(0, 1)
         imageio.imsave(f"out_{i}.png", np.round(p * 255).astype(np.uint8))
