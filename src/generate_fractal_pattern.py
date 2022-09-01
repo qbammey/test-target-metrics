@@ -75,5 +75,9 @@ if __name__ == "__main__":
                                                                         init_yinyang=init_yinyang,
                                                                         return_all_scales=True)
     imageio.imsave("out.png", np.round(pattern * 255).astype(np.uint8))
+    Ye, Xe = pattern.shape
     for i, p in enumerate(all_patterns):
+        Y, X = p.shape
+        rY, rX = Ye//Y, Xe//X
+        p = p.repeat(rY, axis=0).repeat(rX, axis=1)
         imageio.imsave(f"out_{i}.png", np.round(p * 255).astype(np.uint8))
