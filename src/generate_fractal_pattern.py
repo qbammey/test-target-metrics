@@ -65,6 +65,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--initial-average", type=float, default=.5)
     args = parser.parse_args(argv[1:])
     init_yinyang = args.first_tile == 'yinyang'
+    init_yinyang = True
     if args.type == "constant":
         pattern, all_patterns, _ = generate_constant_contrast_target(args.n_scales, args.contrast_init,
                                                                      args.contrast_increment, p0=args.initial_average,
