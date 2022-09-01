@@ -40,13 +40,13 @@ def generate_fractal_pattern(Δ, p0=.5, init_yinyang=True, rng=None, return_all_
 
 def generate_constant_contrast_target(n=7, 𝛿=.15, 𝛿0=.60, **kwargs):
     assert n >= 3
-    Δ = [𝛿0] * 2 + [𝛿] * (n - 2)
+    Δ = [𝛿0] + [𝛿] * (n - 1)
     return generate_fractal_pattern(Δ, **kwargs)
 
 
 def generate_variable_contrast_target_v1(n=7, 𝛿0=.60, k=np.sqrt(2), **kwargs):
-    Δ = [𝛿0] * 2
-    for i in range(n - 2):
+    Δ = [𝛿0]
+    for i in range(n - 1):
         Δ.append(Δ[-1] / k)
     return generate_fractal_pattern(Δ, **kwargs)
 
