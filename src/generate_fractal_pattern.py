@@ -12,7 +12,7 @@ def generate_fractal_pattern(Δ, p0=.5, init_yinyang=True, rng=None, return_all_
     signs = [signs_init]
     for scale, 𝛿 in enumerate(Δ):
         if scale == 0 and init_yinyang:
-            increment = np.array((-.5, .5, -.5, .5))[:, None, None] * signs[-1][None]
+            increment = np.array((-.5, .5, .5, -.5))[:, None, None] * signs[-1][None]
             if rng.random() < .5:
                 increment *= -1
         else:
