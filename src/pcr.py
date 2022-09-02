@@ -4,8 +4,8 @@ import scipy.ndimage
 
 from skimage.util import view_as_blocks
 import imageio  # debug
-ref = imageio.imread("example_target.png") / 255
-obs = imageio.imread("example_target_degraded.png") / 255
+# ref = imageio.imread("example_target.png") / 255
+# obs = imageio.imread("example_target_degraded.png") / 255
 
 def downsample_block(a, σ=None):
     if σ is not None and σ > 0:
