@@ -50,7 +50,7 @@ if __name__ == "__main__":
     if img.ndim == 3:
         img = img.mean(axis=-1)
     contrast_k = args.contrast_bins
-    light_k = args.light_bins
+    light_k = args.intensity_bins
     max_dist = args.distance
     σ = args.downsample if args.downsample>1e-10 else None
 
