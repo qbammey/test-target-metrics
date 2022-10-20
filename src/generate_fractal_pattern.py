@@ -24,7 +24,7 @@ def generate_fractal_pattern(Δ, p0=.5, init_yinyang=True, rng=None, std=None, r
         upscaled[1::2, ::2] = increment[1]
         upscaled[::2, 1::2] = increment[2]
         upscaled[1::2, 1::2] = increment[3]
-        if variance is None:
+        if std is None:
             new_pattern += upscaled * 𝛿
         else:
             new_pattern += upscaled * np.random.normal(𝛿, 𝛿*std, upscaled.shape).clip(0, 𝛿*1.5)
