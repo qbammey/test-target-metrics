@@ -2,7 +2,7 @@ import imageio
 import numpy as np
 
 
-def generate_fractal_pattern(Δ, p0=.5, init_yinyang=True, rng=None, return_all_scales=False):
+def generate_fractal_pattern(Δ, p0=.5, init_yinyang=True, rng=None, std=None, return_all_scales=False):
     if rng is None:
         rng = np.random.default_rng()
     tile = np.array((-.75, .25, .25, .25))
@@ -24,7 +24,10 @@ def generate_fractal_pattern(Δ, p0=.5, init_yinyang=True, rng=None, return_all_
         upscaled[1::2, ::2] = increment[1]
         upscaled[::2, 1::2] = increment[2]
         upscaled[1::2, 1::2] = increment[3]
-        new_pattern += upscaled * 𝛿
+        if variance is None:
+            new_pattern += upscaled * 𝛿
+        else:
+            new_pattern += upscaled * np.random.normal(𝛿, 𝛿*std, upscaled.shape).clip(0, 𝛿*1.5)
         # increment_0 = np.concatenate(increment[:2], axis=0)
         # increment_1 = np.concatenate(increment[2:], axis=0)
         # increment = np.concatenate((increment_0, increment_1), axis=1)
@@ -63,17 +66,20 @@ if __name__ == "__main__":
     parser.add_argument("-k", "--contrast-divider", type=float, default=np.sqrt(2))
     parser.add_argument("-f", "--first-tile", type=str, choices=["yinyang", "corner"], default="yinyang")
     parser.add_argument("-p", "--initial-average", type=float, default=.5)
+    parser.add_argument("-v", "--variable-contrast", type=str, default="false")
+    parser.add_argument("-s", "--variable-contrast-scale", type=float, default=0.2)
     args = parser.parse_args(argv[1:])
+    random_scale = args.variable_contrast_scale if args.variable_contrast=="true" else None
     init_yinyang = args.first_tile == 'yinyang'
     if args.type == "constant":
         pattern, all_patterns, _ = generate_constant_contrast_target(args.n_scales, args.contrast_init,
                                                                      args.contrast_increment, p0=args.initial_average,
-                                                                     init_yinyang=init_yinyang, return_all_scales=True)
+                                                                     init_yinyang=init_yinyang, return_all_scales=True, std=random_scale)
     else:
         pattern, all_patterns, _ = generate_variable_contrast_target_v1(args.n_scales, args.contrast_init,
                                                                         args.contrast_divider, p0=args.initial_average,
                                                                         init_yinyang=init_yinyang,
-                                                                        return_all_scales=True)
+                                                                        return_all_scales=True, std=random_scale)
     imageio.imsave("out.png", np.round(pattern * 255).astype(np.uint8))
     Ye, Xe = pattern.shape
     for i, p in enumerate(all_patterns):
